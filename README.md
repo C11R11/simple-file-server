@@ -16,4 +16,4 @@ docker run --rm -v <path-to-your-folder>:/var/www/static -it -p 8080:80 simple-f
 # Masterplan
 
 * Basic feature (done)
-* Json format files listing to consume (to emulate a rest api to serve a file system)
+* Json format files listing to consume (to emulate a rest api to serve a file system.)
