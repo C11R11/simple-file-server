@@ -1,0 +1,16 @@
+# Dockerfile to create image with cron services
+FROM node:12-alpine
+
+#RUN apt update && apt install nano -y
+RUN apk --update add bash nano
+
+#Copy the base data from repo to the image
+COPY . .
+
+ENV FAKE_REST_TARGET_DIR /data
+ENV SIMPLE_FILE_SERVE_URL "http://localhost/"
+
+#Now install all packages for the project
+RUN npm i
+
+CMD npm run api_serve
