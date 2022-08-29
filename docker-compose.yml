@@ -1,1 +1,33 @@
 # Make a compose for file server and fake rest with shared env variables
+
+version: "3.2"
+services:
+  file_server:
+    build: .
+    container_name: simple-file-server-container
+    image: simple-file-server
+    ports:
+      - "8080:80"
+    volumes:
+      - ${FAKE_REST_VOLUME_DIR}:/var/www/static
+    networks:
+      - app-network
+
+  fake_rest:
+    build: ./fake_rest
+    container_name: fake-rest-files-container
+    image: fake-rest-files
+    ports:
+      - "6543:3456"
+    volumes:
+      - ${FAKE_REST_VOLUME_DIR}:${FAKE_REST_CONTAINER_VOLUME}
+    networks:
+      - app-network
+    environment:
+      - SIMPLE_FILE_SERVE_URL=${SIMPLE_FILE_SERVE_URL}
+      - FAKE_REST_TARGET_DIR=${FAKE_REST_CONTAINER_VOLUME}
+#Docker Networks
+networks:
+  app-network:
+    driver: bridge
+
