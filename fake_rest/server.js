@@ -1,8 +1,11 @@
 var express = require("express");
+var cors = require('cors')
 var app = express();
 app.listen(3456, () => {
   console.log("Server running on port 3456");
 });
+
+app.use(cors())
 
 var fs = require("fs"),
   path = require("path");
@@ -56,11 +59,13 @@ app.get("/dataset/1", (req, res, next) => {
 app.use(express.json())
 app.use(express.urlencoded());
 
-app.post("/dataset/1/file/1", (req, res, next) => {
+app.put("/dataset/1/file/1", (req, res, next) => {
   console.log(req.body)
   res.status(200).json({msje:"helaalo", kjj:req.body.file});
 
-  const fd = fs.openSync(path.join(folder_path,"test3.py"), "r+");
+  const filepath = path.join(folder_path,"test3.py")
+  fs.truncateSync(filepath);
+  const fd = fs.openSync(filepath, "r+");
   const numberOfBytesWritten = fs.writeSync(fd, req.body.file, 0, 'utf8');
 });
 
