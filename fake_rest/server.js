@@ -52,3 +52,21 @@ app.get("/dataset/", (req, res, next) => {
 app.get("/dataset/1", (req, res, next) => {
   res.json(dirTree(folder_path));
 });
+
+app.use(express.json())
+app.use(express.urlencoded());
+
+app.post("/dataset/1/file/1", (req, res, next) => {
+  console.log(req.body)
+  res.status(200).json({msje:"helaalo", kjj:req.body.file});
+
+  const fd = fs.openSync(path.join(folder_path,"test3.py"), "r+");
+  const numberOfBytesWritten = fs.writeSync(fd, req.body.file, 0, 'utf8');
+});
+
+app.get("/dataset/1/file/1", (req, res, next) => {
+  const buffer = fs.readFileSync(path.join(folder_path,"test3.py"));
+  const fileContent = buffer.toString();
+  console.log(fileContent);
+  res.status(200).json({file:fileContent});
+});
