@@ -48,7 +48,7 @@ function dirTree(filename) {
   return info;
 }
 
-let folder_path = "/home/cristian/Desktop/dataset_python_test/";
+let folder_path = "C:/Users/Administrator/Desktop/SGS-Isolated";
 
 if (process.env.FAKE_REST_TARGET_DIR){
   folder_path = process.env.FAKE_REST_TARGET_DIR;
