@@ -26,6 +26,7 @@ services:
     environment:
       - SIMPLE_FILE_SERVE_URL=${SIMPLE_FILE_SERVE_URL}
       - FAKE_REST_TARGET_DIR=${FAKE_REST_CONTAINER_VOLUME}
+      - FAKE_REST_URL=${FAKE_REST_URL}
 #Docker Networks
 networks:
   app-network:
