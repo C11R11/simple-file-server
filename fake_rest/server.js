@@ -9,21 +9,18 @@ app.use(cors())
 
 var fs = require("fs"),
   path = require("path");
+const { exit } = require("process");
 
-let file_serve_url = "http://localhost/"
 let rest_serve_url = ""
 
-if (process.env.SIMPLE_FILE_SERVE_URL){
-    file_serve_url = process.env.SIMPLE_FILE_SERVE_URL;
-    console.log("SIMPLE_FILE_SERVE_URL =>", process.env.SIMPLE_FILE_SERVE_URL);
-  }
-  else console.log("no SIMPLE_FILE_SERVE_URL variable is set");
-
-  if (process.env.FAKE_REST_URL){
-    rest_serve_url = process.env.FAKE_REST_URL;
-    console.log("FAKE_REST_URL =>", process.env.FAKE_REST_URL);
-  }
-  else console.log("no FAKE_REST_URL variable is set");
+if (process.env.FAKE_REST_URL) {
+  rest_serve_url = process.env.FAKE_REST_URL;
+  console.log("FAKE_REST_URL =>", process.env.FAKE_REST_URL);
+}
+else {
+  console.log("no FAKE_REST_URL variable is set");
+  exit(0)
+}
 
 function dirTree(filename) {
   var stats = fs.lstatSync(filename),
@@ -41,16 +38,16 @@ function dirTree(filename) {
     // Assuming it's a file. In real life it could be a symlink or
     // something else!
     info.type = "file";
-    info.url= rest_serve_url + "dataset/1/" + path.basename(filename)
+    info.url = rest_serve_url + "dataset/1/" + path.basename(filename)
     info.id = path.basename(filename)
   }
 
   return info;
 }
 
-let folder_path = "C:/Users/Administrator/Desktop/SGS-Isolated";
+let folder_path = "C:/Users/Administrator/Desktop/implicit";
 
-if (process.env.FAKE_REST_TARGET_DIR){
+if (process.env.FAKE_REST_TARGET_DIR) {
   folder_path = process.env.FAKE_REST_TARGET_DIR;
   console.log("FAKE_REST_TARGET_DIR =>", process.env.FAKE_REST_TARGET_DIR);
 }
@@ -69,27 +66,27 @@ app.use(express.urlencoded());
 
 app.put("/dataset/1/:fileId", (req, res, next) => {
   console.log(req.body)
-  res.status(200).json({msje:"helaalo", kjj:req.body.file});
+  res.status(200).json({ msje: "helaalo", kjj: req.body.file });
 
-  const filepath = path.join(folder_path,req.params.fileId)
+  const filepath = path.join(folder_path, req.params.fileId)
   fs.truncateSync(filepath);
   const fd = fs.openSync(filepath, "r+");
   const numberOfBytesWritten = fs.writeSync(fd, req.body.file, 0, 'utf8');
 });
 
 app.get("/dataset/1/file/1", (req, res, next) => {
-  const buffer = fs.readFileSync(path.join(folder_path,"test3.py"));
+  const buffer = fs.readFileSync(path.join(folder_path, "test3.py"));
   const fileContent = buffer.toString();
   console.log(fileContent);
-  res.status(200).json({file:fileContent});
+  res.status(200).json({ file: fileContent });
 });
 
 app.get('/dataset/1/:fileId', (req, res) => {
 
-  const buffer = fs.readFileSync(path.join(folder_path,req.params.fileId));
+  const buffer = fs.readFileSync(path.join(folder_path, req.params.fileId));
   const fileContent = buffer.toString();
   console.log(fileContent);
-  res.status(200).json({file:fileContent});
+  res.status(200).json({ file: fileContent });
 
   // return res.send(
   //   `PUT HTTP method on user/${req.params.fileId} resource`,
