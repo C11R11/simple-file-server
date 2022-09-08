@@ -18,7 +18,7 @@ services:
     container_name: fake-rest-files-container
     image: fake-rest-files
     ports:
-      - "${FAKE_REST_VOLUME_PORT}:3456"
+      - "${FAKE_REST_CONTAINER_PORT}:3456"
     volumes:
       - ${FAKE_REST_VOLUME_DIR}:${FAKE_REST_CONTAINER_VOLUME}
     networks:
