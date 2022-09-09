@@ -39,6 +39,7 @@ app.listen(port, () => {
 });
 
 app.use(cors());
+app.use('/uploads', express.static('uploads'))
 
 var fs = require("fs"),
   path = require("path");
