@@ -1,4 +1,4 @@
-require('dotenv').config()
+require("dotenv").config();
 
 let port;
 
@@ -7,7 +7,7 @@ if (process.env.FAKE_REST_PORT) {
   console.log("FAKE_REST_PORT =>", process.env.FAKE_REST_PORT);
 } else {
   console.log("no FAKE_REST_PORT variable is set");
-  process.exit(0)
+  process.exit(0);
 }
 
 let rest_serve_url = "";
@@ -17,7 +17,7 @@ if (process.env.FAKE_REST_URL) {
   console.log("FAKE_REST_URL =>", process.env.FAKE_REST_URL);
 } else {
   console.log("no FAKE_REST_URL variable is set");
-  process.exit(0)
+  process.exit(0);
 }
 
 let folder_path;
@@ -27,7 +27,7 @@ if (process.env.FAKE_REST_TARGET_DIR) {
   console.log("FAKE_REST_TARGET_DIR =>", process.env.FAKE_REST_TARGET_DIR);
 } else {
   console.log("no FAKE_REST_TARGET_DIR variable is set");
-  process.exit(0)
+  process.exit(0);
 }
 
 var express = require("express");
@@ -39,7 +39,7 @@ app.listen(port, () => {
 });
 
 app.use(cors());
-app.use('/uploads', express.static('uploads'))
+app.use("/uploads", express.static("uploads"));
 
 var fs = require("fs"),
   path = require("path");
@@ -52,6 +52,8 @@ function dirTree(filename) {
       name: path.basename(filename),
     };
 
+  console.log("filename", filename, path.extname(filename));
+
   if (stats.isDirectory()) {
     info.type = "folder";
     info.children = fs.readdirSync(filename).map(function (child) {
@@ -60,7 +62,9 @@ function dirTree(filename) {
   } else {
     // Assuming it's a file. In real life it could be a symlink or
     // something else!
-    info.type = "file";
+
+    if (path.extname(filename) == ".png") info.type = "html";
+    else info.type = "file";
     info.url = rest_serve_url + "dataset/1/" + path.basename(filename);
     info.id = path.basename(filename);
   }
@@ -80,11 +84,11 @@ app.get("/dataset/1", (req, res, next) => {
 });
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: true }));
 
 app.put("/dataset/1/:fileId", (req, res, next) => {
   console.log(req.body);
-  res.status(200).json({ msje: "helaalo", kjj: req.body.file });
+  res.status(200).json({ fileType: path.extname(req.body.file), kjj: req.body.file });
 
   const filepath = path.join(folder_path, req.params.fileId);
   fs.truncateSync(filepath);
@@ -93,8 +97,18 @@ app.put("/dataset/1/:fileId", (req, res, next) => {
 });
 
 app.get("/dataset/1/:fileId", (req, res) => {
+
+  const fileType = path.extname(req.params.fileId)
+
   const buffer = fs.readFileSync(path.join(folder_path, req.params.fileId));
   const fileContent = buffer.toString();
-  console.log(fileContent);
-  res.status(200).json({ file: fileContent });
+  const tag = `<img src="${rest_serve_url + "uploads/" + req.params.fileId}" alt="logo"/>`
+  if (req.params.fileId == "hello.png")
+  {
+    const filepath = path.join(folder_path, req.params.fileId);
+    const destFilePath = path.join("uploads", req.params.fileId);
+    fs.copyFileSync(filepath, destFilePath);
+    res.status(200).json({ fileType:fileType, view:tag});
+  }
+  else res.status(200).json({ fileType:fileType, file: fileContent });
 });
