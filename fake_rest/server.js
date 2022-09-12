@@ -63,7 +63,11 @@ function dirTree(filename) {
     // Assuming it's a file. In real life it could be a symlink or
     // something else!
 
-    if (path.extname(filename) == ".png") info.type = "html";
+    const theFile = path.extname(filename)
+
+    if (theFile == [".png", ".jpg", "gif"].filter((value) => { return value==theFile;})[0]) info.type = "img";
+    else if (theFile == ".py") info.type = "python";
+    else if ([".txt", ".sgs", ".json"].filter((value) => { return value==theFile;})[0]) info.type = "text";
     else info.type = "file";
     info.url = rest_serve_url + "dataset/1/" + path.basename(filename);
     info.id = path.basename(filename);
@@ -103,7 +107,7 @@ app.get("/dataset/1/:fileId", (req, res) => {
   const buffer = fs.readFileSync(path.join(folder_path, req.params.fileId));
   const fileContent = buffer.toString();
   const tag = `<img src="${rest_serve_url + "uploads/" + req.params.fileId}" alt="logo"/>`
-  if (req.params.fileId == "hello.png")
+  if (path.extname(req.params.fileId) == ".png")
   {
     const filepath = path.join(folder_path, req.params.fileId);
     const destFilePath = path.join("uploads", req.params.fileId);
