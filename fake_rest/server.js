@@ -65,7 +65,7 @@ function dirTree(filename) {
 
     const theFile = path.extname(filename)
 
-    if (theFile == [".png", ".jpg", "gif"].filter((value) => { return value==theFile;})[0]) info.type = "img";
+    if (theFile == [".png", ".jpg", ".gif", ".html"].filter((value) => { return value==theFile;})[0]) info.type = "html";
     else if (theFile == ".py") info.type = "python";
     else if ([".txt", ".sgs", ".json", ".spec"].filter((value) => { return value==theFile;})[0]) info.type = "text";
     else info.type = "file";
@@ -89,7 +89,6 @@ app.get("/dataset/1", (req, res, next) => {
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 app.put("/dataset/1/:fileId", (req, res, next) => {
   console.log(req.body);
   res.status(200).json({ fileType: path.extname(req.body.file), kjj: req.body.file });
@@ -114,5 +113,12 @@ app.get("/dataset/1/:fileId", (req, res) => {
     fs.copyFileSync(filepath, destFilePath);
     res.status(200).json({ fileType:fileType, view:tag});
   }
+  else if(path.extname(req.params.fileId) == ".html")
+  {
+    const filepath = path.join(folder_path, req.params.fileId);
+    const destFilePath = path.join("uploads", req.params.fileId);
+    fs.copyFileSync(filepath, destFilePath);
+    res.status(200).json({ fileType:fileType, url: rest_serve_url + "uploads/" + req.params.fileId });
+  } 
   else res.status(200).json({ fileType:fileType, file: fileContent });
 });
