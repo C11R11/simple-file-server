@@ -65,9 +65,10 @@ function dirTree(filename) {
 
     const theFile = path.extname(filename)
 
-    if (theFile == [".png", ".jpg", ".gif", ".html"].filter((value) => { return value==theFile;})[0]) info.type = "html";
+    if (theFile == [".png", ".jpg", ".gif"].filter((value) => { return value==theFile;})[0]) info.type = "img";
+    else if (theFile == [".html"].filter((value) => { return value==theFile;})[0]) info.type = "html";
     else if (theFile == ".py") info.type = "python";
-    else if ([".txt", ".sgs", ".json", ".spec"].filter((value) => { return value==theFile;})[0]) info.type = "text";
+    else if ([".txt", ".sgs", ".json", ".spec", ".log", ".bdf", ".dg1"].filter((value) => { return value==theFile;})[0]) info.type = "text";
     else info.type = "file";
     info.url = rest_serve_url + "dataset/1/" + path.basename(filename);
     info.id = path.basename(filename);
