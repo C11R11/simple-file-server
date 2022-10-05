@@ -77,6 +77,10 @@ function dirTree(filename) {
   return info;
 }
 
+app.get("/status/", (req, res, next) => {
+  res.json({status:"ok" });
+});
+
 /**
  * So fake this one
  */
