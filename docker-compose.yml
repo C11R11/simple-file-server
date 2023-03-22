@@ -9,7 +9,7 @@ services:
     ports:
       - "${SIMPLE_FILE_SERVE_PORT}:80"
     volumes:
-      - ${FAKE_REST_VOLUME_DIR}:/var/www/static
+      - ${FAKE_REST_VOLUME_DIR}:/var/www/static #This is the volume for the files
     networks:
       - app-network
 
@@ -20,13 +20,13 @@ services:
     ports:
       - "${FAKE_REST_CONTAINER_PORT}:3456"
     volumes:
-      - ${FAKE_REST_VOLUME_DIR}:${FAKE_REST_CONTAINER_VOLUME}
+      - ${FAKE_REST_VOLUME_DIR}:${FAKE_REST_CONTAINER_VOLUME} #Target volume for the rest api
     networks:
       - app-network
     environment:
-      - SIMPLE_FILE_SERVE_URL=${SIMPLE_FILE_SERVE_URL}
-      - FAKE_REST_TARGET_DIR=${FAKE_REST_CONTAINER_VOLUME}
-      - FAKE_REST_URL=${FAKE_REST_URL}
+      - SIMPLE_FILE_SERVE_URL=${SIMPLE_FILE_SERVE_URL} #This is to put a prefix to the data volume Url resources to serve
+      - FAKE_REST_TARGET_DIR=${FAKE_REST_CONTAINER_VOLUME} #The api looks into the container volume to serve the files on it
+      - FAKE_REST_URL=${FAKE_REST_URL} # To make resources urls pointing to the right server
       - FAKE_REST_PORT=3456
 #Docker Networks
 networks:

@@ -77,6 +77,24 @@ function dirTree(filename) {
   return info;
 }
 
+function filenamesFilter(folder_path, fileNameFilter)
+{
+  let files = []
+
+  fs.readdirSync(folder_path).map(function (child) {
+    console.log(child)
+    const extName = path.extname(child)
+
+    console.log("ext", extName)
+
+    if(extName == fileNameFilter)
+        files.push(child)
+  });
+
+  console.log(files)
+  return files
+}
+
 app.get("/status/", (req, res, next) => {
   res.json({status:"ok" });
 });
@@ -90,6 +108,12 @@ app.get("/dataset/", (req, res, next) => {
 
 app.get("/dataset/1", (req, res, next) => {
   res.json(dirTree(folder_path));
+});
+
+app.get("/dataset/1/filter/:filenameFilter", (req, res) => {
+  const fileNameFilter = req.params.filenameFilter
+  console.log("fileNameFilter", fileNameFilter)
+  res.json(filenamesFilter(folder_path, fileNameFilter));
 });
 
 app.use(express.json());
